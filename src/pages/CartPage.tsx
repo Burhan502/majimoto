@@ -3,23 +3,25 @@ import { Link } from 'react-router-dom'
 import { Button } from '../components/common/Button'
 import { formatTZS } from '../data/products'
 import { useCart } from '../context/CartContext'
+import { useLanguage } from '../context/LanguageContext'
 
 function CartPage() {
   const { itemDetails, updateQuantity, removeFromCart, subtotal, deliveryFee, total } = useCart()
+  const { t } = useLanguage()
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Shopping cart</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-900">Your order summary</h1>
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">{t('shoppingCart')}</p>
+        <h1 className="mt-2 text-3xl font-black text-slate-900">{t('orderSummary')}</h1>
       </div>
 
       {itemDetails.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <h2 className="text-2xl font-bold text-slate-900">Your cart is empty</h2>
-          <p className="mt-2 text-slate-600">Add rice or beans to get started.</p>
+          <h2 className="text-2xl font-bold text-slate-900">{t('emptyCart')}</h2>
+          <p className="mt-2 text-slate-600">{t('emptyCartMessage')}</p>
           <Link to="/shop" className="mt-6 inline-block">
-            <Button>Browse products</Button>
+            <Button>{t('browseProducts')}</Button>
           </Link>
         </div>
       ) : (
@@ -50,7 +52,7 @@ function CartPage() {
                       </button>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Unit price</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{t('unitPrice')}</p>
                       <p className="text-base font-semibold text-slate-800">{formatTZS(unitPrice)}</p>
                     </div>
                   </div>
@@ -61,25 +63,25 @@ function CartPage() {
           </div>
 
           <aside className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900">Order summary</h2>
+            <h2 className="text-xl font-bold text-slate-900">{t('orderSummary')}</h2>
             <div className="mt-6 space-y-4">
               <div className="flex items-center justify-between text-slate-600">
-                <span>Subtotal</span>
+                <span>{t('subtotal')}</span>
                 <span>{formatTZS(subtotal)}</span>
               </div>
               <div className="flex items-center justify-between text-slate-600">
-                <span>Delivery</span>
+                <span>{t('delivery')}</span>
                 <span>{formatTZS(deliveryFee)}</span>
               </div>
               <div className="border-t border-slate-200 pt-4 text-lg font-black text-slate-900">
                 <div className="flex items-center justify-between">
-                  <span>Total</span>
+                  <span>{t('total')}</span>
                   <span>{formatTZS(total)}</span>
                 </div>
               </div>
             </div>
             <Link to="/checkout" className="mt-6 block">
-              <Button className="w-full">Proceed to checkout</Button>
+              <Button className="w-full">{t('proceedCheckout')}</Button>
             </Link>
           </aside>
         </div>

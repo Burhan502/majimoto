@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useState } from 'react'
-import { DELIVERY_FEE_TZS, products } from '../data/products'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { DELIVERY_FEE_TZS, loadProducts, products } from '../data/products'
 import type { CartItem, Product } from '../types'
 
 type CartContextValue = {
@@ -19,6 +19,11 @@ const CartContext = createContext<CartContextValue | undefined>(undefined)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [catalog, setCatalog] = useState<Product[]>(products)
+
+  useEffect(() => {
+    loadProducts().then(setCatalog)
+  }, [])
 
   const addToCart = (productId: string, sizeId: string, quantity = 1) => {
     setItems((current) => {
@@ -56,7 +61,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const itemDetails = useMemo(() => {
     return items
       .map((item) => {
-        const product = products.find((entry) => entry.id === item.productId)
+        const product = catalog.find((entry) => entry.id === item.productId)
         if (!product) return null
 
         const size = product.sizes.find((entry) => entry.id === item.sizeId)
@@ -68,7 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           sizeLabel: size.label,
           quantity: item.quantity,
           unitPrice: size.price,
-          lineTotal: size.price * item.quantity,
+          lineTotal: (size.price ?? 0) * item.quantity,
         }
       })
       .filter(Boolean) as Array<{
@@ -79,7 +84,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         unitPrice: number
         lineTotal: number
       }>
-  }, [items])
+  }, [catalog, items])
 
   const subtotal = useMemo(
     () => itemDetails.reduce((total, item) => total + item.lineTotal, 0),

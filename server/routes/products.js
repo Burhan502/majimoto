@@ -3,10 +3,45 @@ import pool from '../db.js'
 
 const router = express.Router()
 
+async function getProductWithSizes(productRow, connection = pool) {
+  const [sizeRows] = await connection.query(
+    'SELECT id, size, price, stock FROM product_sizes WHERE product_id = ? ORDER BY id ASC',
+    [productRow.id],
+  )
+
+  const sizes = sizeRows.length > 0
+    ? sizeRows.map((size) => ({
+        id: String(size.id),
+        label: size.size,
+        price: Number(size.price),
+        stock: size.stock,
+      }))
+    : [{
+        id: `${productRow.id}-default`,
+        label: '1 KG',
+        price: Number(productRow.price),
+        stock: productRow.stock,
+      }]
+
+  return {
+    id: String(productRow.id),
+    name: productRow.name,
+    category: productRow.category,
+    weight: sizes[0].label,
+    description: productRow.description || '',
+    image: productRow.image || '',
+    source: productRow.source || '',
+    stock: productRow.stock,
+    sizes,
+    isFeatured: false,
+  }
+}
+
 router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM products ORDER BY id ASC')
-    res.json(rows)
+    const products = await Promise.all(rows.map((product) => getProductWithSizes(product)))
+    res.json(products)
   } catch (error) {
     res.status(500).json({ message: 'Unable to fetch products', error: error.message })
   }
@@ -20,7 +55,7 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Product not found' })
     }
 
-    return res.json(rows[0])
+    return res.json(await getProductWithSizes(rows[0]))
   } catch (error) {
     return res.status(500).json({ message: 'Unable to fetch product', error: error.message })
   }

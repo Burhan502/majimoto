@@ -3,7 +3,7 @@ import { fallbackProducts } from './fallbackProducts'
 import { apiRequest } from '../services/api'
 
 export const DELIVERY_FEE_TZS = 3500
-export const WHATSAPP_NUMBER = '+255712345678'
+export const WHATSAPP_NUMBER = '+255768415973'
 
 let cachedProducts: Product[] | null = null
 

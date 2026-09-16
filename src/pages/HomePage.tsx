@@ -1,10 +1,11 @@
-import { ArrowRight, BadgeCheck, CheckCircle2, Leaf, MapPinned, PackageCheck, ShoppingBag, Star } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BadgeCheck, CheckCircle2, Leaf, MapPinned, PackageCheck, ShoppingBag, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/common/Button'
 import { fallbackProducts } from '../data/fallbackProducts'
 import { formatTZS, WHATSAPP_NUMBER } from '../data/products'
 import type { Product } from '../types'
+import { useLanguage } from '../context/LanguageContext'
 
 const reasons = [
   { icon: BadgeCheck, title: 'Quality Products', text: 'Carefully selected rice and beans that meet our trusted standards.' },
@@ -27,9 +28,25 @@ const reviews = [
   { name: 'Mariam N.', text: 'A trustworthy supplier for our family needs. The product quality matches the pricing and service.' },
 ]
 
+const heroSlides = [
+  { image: '/home/farmer.jpeg', alt: 'Farmer holding freshly harvested rice' },
+  { image: '/home/farm.jpeg', alt: 'Farmer working in a green rice field' },
+  { image: '/home/rice aestethic.jpeg', alt: 'Rice crop glowing in the morning sun' },
+]
+
 function HomePage() {
   const [featured, setFeatured] = useState<Product[]>(fallbackProducts)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const { t } = useLanguage()
   const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}`
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length)
+    }, 5000)
+
+    return () => window.clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     const load = async () => {
@@ -54,27 +71,27 @@ function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-              <Leaf size={14} /> Trusted from Mpanda
+              <Leaf size={14} /> {t('trustedFromMpanda')}
             </div>
             <h1 className="max-w-xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Quality Rice &amp; Beans from Mpanda, Delivered to Your Door.
+              {t('qualityHeadline')}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-slate-600">
-              From trusted agricultural sources in Mpanda to your table. Order quality rice and beans conveniently and enjoy reliable delivery.
+              {t('heroDescription')}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/shop">
-                <Button className="w-full sm:w-auto">Shop Now</Button>
+                <Button className="w-full sm:w-auto">{t('shopNow')}</Button>
               </Link>
               <a href={whatsappLink} target="_blank" rel="noreferrer">
                 <Button variant="secondary" className="w-full sm:w-auto">
-                  Order via WhatsApp
+                  {t('orderViaWhatsApp')}
                 </Button>
               </a>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-slate-600">
-              <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Fresh &amp; clean</span>
-              <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> Trusted sourcing</span>
+              <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> {t('freshClean')}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-600" /> {t('trustedSourcing')}</span>
             </div>
           </div>
 
@@ -82,11 +99,40 @@ function HomePage() {
             <div className="absolute -left-6 top-8 h-24 w-24 rounded-full bg-amber-200/70 blur-3xl" />
             <div className="absolute -right-4 bottom-6 h-28 w-28 rounded-full bg-emerald-200/80 blur-3xl" />
             <div className="relative overflow-hidden rounded-[2rem] border border-emerald-100 bg-white p-3 shadow-[0_25px_70px_rgba(15,118,110,0.14)]">
-              <img
-                src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=1200&q=80"
-                alt="Rice fields and produce"
-                className="h-[520px] w-full rounded-[1.5rem] object-cover"
-              />
+              <div className="relative h-[520px]">
+                <img
+                  src={heroSlides[activeSlide].image}
+                  alt={heroSlides[activeSlide].alt}
+                  className="h-full w-full rounded-[1.5rem] object-cover transition-opacity duration-700"
+                />
+                <button
+                  type="button"
+                  aria-label="Previous homepage image"
+                  onClick={() => setActiveSlide((current) => (current - 1 + heroSlides.length) % heroSlides.length)}
+                  className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-slate-950/55 text-white backdrop-blur-sm transition hover:bg-slate-950/75"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next homepage image"
+                  onClick={() => setActiveSlide((current) => (current + 1) % heroSlides.length)}
+                  className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-slate-950/55 text-white backdrop-blur-sm transition hover:bg-slate-950/75"
+                >
+                  <ArrowRight size={18} />
+                </button>
+                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-slate-950/45 px-3 py-2 backdrop-blur-sm">
+                  {heroSlides.map((slide, index) => (
+                    <button
+                      key={slide.image}
+                      type="button"
+                      aria-label={`Show homepage image ${index + 1}`}
+                      onClick={() => setActiveSlide(index)}
+                      className={`h-2 rounded-full transition-all ${index === activeSlide ? 'w-7 bg-white' : 'w-2 bg-white/55 hover:bg-white/80'}`}
+                    />
+                  ))}
+                </div>
+              </div>
               <div className="absolute bottom-8 left-8 right-8 rounded-2xl border border-white/60 bg-white/85 p-4 backdrop-blur-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -105,8 +151,8 @@ function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Why choose Majimoto?</p>
-          <h2 className="mt-3 text-3xl font-black text-slate-900 sm:text-4xl">Built for quality, trust, and convenience</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">{t('whyChoose')}</p>
+          <h2 className="mt-3 text-3xl font-black text-slate-900 sm:text-4xl">{t('qualityTrustConvenience')}</h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {reasons.map(({ icon: Icon, title, text }) => (
@@ -125,11 +171,11 @@ function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Featured products</p>
-              <h2 className="mt-3 text-3xl font-black sm:text-4xl">Fresh essentials for your home</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">{t('featuredProducts')}</p>
+              <h2 className="mt-3 text-3xl font-black sm:text-4xl">{t('freshEssentials')}</h2>
             </div>
             <Link to="/shop" className="hidden items-center gap-2 text-sm font-semibold text-emerald-300 hover:text-emerald-200 md:inline-flex">
-              View all products <ArrowRight size={16} />
+              {t('viewAllProducts')} <ArrowRight size={16} />
             </Link>
           </div>
 
@@ -143,15 +189,15 @@ function HomePage() {
                     <h3 className="mt-3 text-2xl font-bold">{product.name}</h3>
                     <p className="mt-3 text-sm leading-6 text-slate-300">{product.description}</p>
                     <div className="mt-5 flex items-center justify-between">
-                      <span className="text-2xl font-black text-white">{formatTZS(product.sizes[0].price)}</span>
+                      <span className="text-2xl font-black text-white">{product.sizes[0].price !== undefined ? formatTZS(product.sizes[0].price) : t('priceComingSoon')}</span>
                       <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">{product.sizes[0].label}</span>
                     </div>
                     <div className="mt-6 flex gap-3">
                       <Link to={`/shop/${product.id}`} className="flex-1">
-                        <Button variant="secondary" className="w-full border-slate-600 bg-slate-700 text-white hover:bg-slate-600">Details</Button>
+                        <Button variant="secondary" className="w-full border-slate-600 bg-slate-700 text-white hover:bg-slate-600">{t('details')}</Button>
                       </Link>
                       <a href={whatsappLink} target="_blank" rel="noreferrer" className="flex-1">
-                        <Button className="w-full">Order</Button>
+                        <Button className="w-full">{t('order')}</Button>
                       </a>
                     </div>
                   </div>
@@ -217,11 +263,11 @@ function HomePage() {
       <section className="bg-gradient-to-r from-emerald-700 to-emerald-900 py-16 text-white">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 px-4 text-center sm:px-6 lg:flex-row lg:text-left lg:px-8">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-100">Ready to order?</p>
-            <h2 className="mt-3 text-3xl font-black">Shop Majimoto today</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-100">{t('readyToOrder')}</p>
+            <h2 className="mt-3 text-3xl font-black">{t('shopMajimoto')}</h2>
           </div>
           <Link to="/shop">
-            <Button variant="secondary" className="border-white bg-white text-emerald-800 hover:bg-emerald-50">Shop Majimoto</Button>
+            <Button variant="secondary" className="border-white bg-white text-emerald-800 hover:bg-emerald-50">{t('shopMajimoto')}</Button>
           </Link>
         </div>
       </section>

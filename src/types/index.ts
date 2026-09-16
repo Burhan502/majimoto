@@ -3,7 +3,7 @@ export type ProductCategory = 'Rice' | 'Beans'
 export type ProductSize = {
   id: string
   label: string
-  price: number
+  price?: number
   stock: number
 }
 
@@ -11,6 +11,7 @@ export type Product = {
   id: string
   name: string
   category: ProductCategory
+  weight: string
   description: string
   image: string
   source: string

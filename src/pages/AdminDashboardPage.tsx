@@ -1,6 +1,9 @@
 import { Package, ShoppingCart, TrendingUp, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { OrderStatusBadge } from '../components/common/OrderStatusBadge'
 import { products } from '../data/products'
+import { formatTZS } from '../data/products'
+import { apiRequest } from '../services/api'
 import type { OrderStatus } from '../types'
 
 type AdminOrder = {
@@ -12,20 +15,66 @@ type AdminOrder = {
   status: OrderStatus
 }
 
-const overview = [
-  { label: 'Total Orders', value: '128', icon: ShoppingCart },
-  { label: 'Pending Orders', value: '18', icon: Users },
-  { label: 'Completed Orders', value: '96', icon: TrendingUp },
-  { label: 'Total Sales', value: 'TZS 4,800,000', icon: Package },
-]
-
 const orders: AdminOrder[] = [
   { id: 'MR-1042', customer: 'Aisha Msuya', phone: '+255 712 345 678', items: '2 items', total: 'TZS 74,000', status: 'Pending' },
   { id: 'MR-1041', customer: 'John M.', phone: '+255 789 345 112', items: '1 item', total: 'TZS 39,000', status: 'Confirmed' },
   { id: 'MR-1039', customer: 'Tatu K.', phone: '+255 655 890 221', items: '3 items', total: 'TZS 123,000', status: 'Preparing' },
 ]
 
+type ApiOrder = {
+  id: number
+  customer_name: string
+  phone: string
+  total: number | string
+  status: OrderStatus
+}
+
+type ApiProduct = {
+  id: number
+  name: string
+  category: string
+  stock: number
+}
+
 function AdminDashboardPage() {
+  const [liveOrders, setLiveOrders] = useState<AdminOrder[]>(orders)
+  const [liveProducts, setLiveProducts] = useState<ApiProduct[]>([])
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const [apiOrders, apiProducts] = await Promise.all([
+          apiRequest<ApiOrder[]>('/api/orders'),
+          apiRequest<ApiProduct[]>('/api/products'),
+        ])
+
+        setLiveOrders(apiOrders.slice(0, 8).map((order) => ({
+          id: `MR-${String(order.id).padStart(4, '0')}`,
+          customer: order.customer_name,
+          phone: order.phone,
+          items: 'Order items',
+          total: formatTZS(Number(order.total)),
+          status: order.status,
+        })))
+        setLiveProducts(apiProducts)
+      } catch {
+        setLiveOrders(orders)
+      }
+    }
+
+    loadDashboard()
+  }, [])
+
+  const pendingOrders = liveOrders.filter((order) => order.status === 'Pending').length
+  const completedOrders = liveOrders.filter((order) => order.status === 'Delivered').length
+  const totalSales = liveOrders.reduce((sum, order) => sum + Number(order.total.replace(/[^0-9.-]+/g, '')), 0)
+  const overview = [
+    { label: 'Total Orders', value: String(liveOrders.length), icon: ShoppingCart },
+    { label: 'Pending Orders', value: String(pendingOrders), icon: Users },
+    { label: 'Completed Orders', value: String(completedOrders), icon: TrendingUp },
+    { label: 'Total Sales', value: formatTZS(totalSales), icon: Package },
+  ]
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
@@ -68,7 +117,7 @@ function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {liveOrders.map((order) => (
                   <tr key={order.id} className="border-b border-slate-100">
                     <td className="py-3 pr-4 font-semibold text-slate-800">{order.id}</td>
                     <td className="py-3 pr-4">
@@ -88,7 +137,7 @@ function AdminDashboardPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-xl font-bold text-slate-900">Product management</h2>
           <div className="mt-5 space-y-3">
-            {products.map((product) => (
+            {(liveProducts.length > 0 ? liveProducts : products).map((product) => (
               <div key={product.id} className="rounded-2xl bg-slate-50 p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
