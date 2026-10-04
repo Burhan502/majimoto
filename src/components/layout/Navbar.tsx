@@ -20,7 +20,7 @@ export function Navbar() {
           <img src="/majimotologo.png" alt="Majimoto Rice logo" className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14" />
           <div>
             <div className="text-base font-black tracking-tight text-slate-900 sm:text-lg">Majimoto Rice</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-emerald-700">{t('fromMpanda')}</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-emerald-700">{t('fromMpibwe')}</div>
           </div>
         </Link>
 

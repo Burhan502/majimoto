@@ -14,7 +14,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div>
           <div className="mb-4 text-2xl font-black text-white">Majimoto Rice</div>
-          <p className="text-sm text-slate-300">{t('fromMpanda')} to Your Table.</p>
+          <p className="text-sm text-slate-300">{t('fromMpibweToTable')}</p>
         </div>
 
         <div>
@@ -31,7 +31,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white">Contact</h3>
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white">{t('contact')}</h3>
           <ul className="space-y-3 text-sm text-slate-300">
             <li className="flex items-center gap-2"><Phone size={15} /> 0768 415 973</li>
             <li className="flex items-center gap-2"><MessageCircle size={15} /> 0768 415 973</li>
@@ -41,7 +41,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white">Follow</h3>
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white">{t('follow')}</h3>
           <div className="flex gap-3">
             {[Globe, MessageCircle].map((Icon, index) => (
               <a key={index} href="https://www.facebook.com" target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 text-slate-300 hover:border-emerald-500 hover:text-white">
