@@ -13,13 +13,13 @@ async function getProductWithSizes(productRow, connection = pool) {
     ? sizeRows.map((size) => ({
         id: String(size.id),
         label: size.size,
-        price: Number(size.price),
+        price: size.price == null ? undefined : Number(size.price),
         stock: size.stock,
       }))
     : [{
         id: `${productRow.id}-default`,
         label: '1 KG',
-        price: Number(productRow.price),
+        price: productRow.price == null ? undefined : Number(productRow.price),
         stock: productRow.stock,
       }]
 

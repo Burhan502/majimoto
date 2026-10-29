@@ -2,6 +2,7 @@ import { Search, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { ProductCard } from '../components/product/ProductCard'
 import { fallbackProducts } from '../data/fallbackProducts'
+import { loadProducts } from '../data/products'
 import type { Product } from '../types'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -15,14 +16,7 @@ function ShopPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch('/api/products')
-        if (!response.ok) return
-        const data = (await response.json()) as Product[]
-        if (Array.isArray(data) && data.length > 0) {
-          setProducts(data)
-        }
-      } catch {
-        setProducts(fallbackProducts)
+        setProducts(await loadProducts())
       } finally {
         setIsLoading(false)
       }

@@ -9,12 +9,27 @@ let cachedProducts: Product[] | null = null
 
 export const products: Product[] = fallbackProducts
 
+function applyPlaceholderPrices(products: Product[]): Product[] {
+  return products.map((product) => {
+    return {
+      ...product,
+      sizes: product.sizes.map((size) => {
+        const placeholderPrice = fallbackProducts
+          .filter((item) => item.category === product.category)
+          .flatMap((item) => item.sizes)
+          .find((item) => item.label === size.label)?.price
+        return { ...size, price: size.price ?? placeholderPrice }
+      }),
+    }
+  })
+}
+
 export async function loadProducts(): Promise<Product[]> {
   try {
     const data = await apiRequest<Product[]>('/api/products')
     if (Array.isArray(data) && data.length > 0) {
-      cachedProducts = data
-      return data
+      cachedProducts = applyPlaceholderPrices(data)
+      return cachedProducts
     }
   } catch {
     cachedProducts = fallbackProducts

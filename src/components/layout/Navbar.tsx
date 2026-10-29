@@ -1,13 +1,16 @@
-import { Menu, ShoppingCart, X } from 'lucide-react'
+import { Menu, Moon, ShoppingCart, Sun, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { useTheme } from '../../context/ThemeContext'
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { cartCount } = useCart()
   const { language, setLanguage, t } = useLanguage()
+  const { theme, toggleTheme } = useTheme()
+  const themeLabel = theme === 'dark' ? t('lightMode') : t('darkMode')
   const navItems = [
     { label: t('home'), to: '/' }, { label: t('shop'), to: '/shop' }, { label: t('about'), to: '/about' },
     { label: t('delivery'), to: '/delivery' }, { label: t('contact'), to: '/contact' },
@@ -43,6 +46,16 @@ export function Navbar() {
             <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2.5 py-1 text-xs font-bold ${language === 'en' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500'}`}>EN</button>
             <button type="button" onClick={() => setLanguage('sw')} className={`rounded-full px-2.5 py-1 text-xs font-bold ${language === 'sw' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500'}`}>SW</button>
           </div>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={themeLabel}
+            title={themeLabel}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:border-emerald-200 hover:text-emerald-700"
+          >
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            <span>{themeLabel}</span>
+          </button>
           <Link to="/cart" className="relative flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-800 hover:border-emerald-200 hover:text-emerald-700">
             <ShoppingCart size={18} />
             {t('cart')}
@@ -77,6 +90,15 @@ export function Navbar() {
                 <button type="button" onClick={() => setLanguage('sw')} className={`rounded-full px-3 py-1 text-xs font-bold ${language === 'sw' ? 'bg-emerald-700 text-white' : 'text-slate-500'}`}>Kiswahili</button>
               </div>
             </div>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+              aria-label={themeLabel}
+            >
+              <span>{themeLabel}</span>
+              {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
             {navItems.map((item) => (
               <NavLink
                 key={item.to}

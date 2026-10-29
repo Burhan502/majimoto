@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: 'Manrope', 'Segoe UI', sans-serif;
@@ -53,4 +54,106 @@ h2,
 h3,
 p {
   margin: 0;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #0c1511;
+  color: #e2e8f0;
+}
+
+html.dark .bg-white,
+html.dark .bg-white\/90 {
+  background-color: #17251f;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #101a15;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #1d2b24;
+}
+
+html.dark .bg-slate-200 {
+  background-color: #293a31;
+}
+
+html.dark .bg-emerald-50 {
+  background-color: #153326;
+}
+
+html.dark .bg-emerald-100 {
+  background-color: #1c3e2d;
+}
+
+html.dark .text-slate-900 {
+  color: #e5eee8;
+}
+
+html.dark .text-slate-800 {
+  color: #d7e1da;
+}
+
+html.dark .text-slate-700 {
+  color: #c3d0c8;
+}
+
+html.dark .text-slate-600 {
+  color: #aab9b0;
+}
+
+html.dark .text-slate-500 {
+  color: #93a398;
+}
+
+html.dark .text-slate-400 {
+  color: #84958b;
+}
+
+html.dark .text-emerald-900 {
+  color: #d4f4df;
+}
+
+html.dark .text-emerald-800 {
+  color: #8ce2a8;
+}
+
+html.dark .text-emerald-700 {
+  color: #72d995;
+}
+
+html.dark .border-slate-100 {
+  border-color: #26372e;
+}
+
+html.dark .border-slate-200 {
+  border-color: #34463c;
+}
+
+html.dark .border-slate-300 {
+  border-color: #46594e;
+}
+
+html.dark .border-emerald-100 {
+  border-color: #294536;
+}
+
+html.dark .border-emerald-200 {
+  border-color: #365b44;
+}
+
+html.dark .placeholder\:text-slate-400::placeholder {
+  color: #84958b;
+}
+
+html.dark .bg-red-50 {
+  background-color: #3a1d1d;
+}
+
+html.dark .text-red-700 {
+  color: #fca5a5;
 }

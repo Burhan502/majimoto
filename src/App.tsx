@@ -14,7 +14,7 @@ import ShopPage from './pages/ShopPage'
 
 function App() {
   return (
-    <div className="min-h-screen bg-[#f8faf7] text-slate-900 antialiased">
+    <div className="min-h-screen bg-[#f8faf7] text-slate-900 antialiased dark:bg-slate-950">
       <Navbar />
       <main>
         <Routes>
